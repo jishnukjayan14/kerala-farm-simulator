@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CropModels } from './Crops.js';
 import { sounds } from './Audio.js';
+import { TextureGenerator } from './TextureGenerator.js';
 
 /**
  * 3D Farm Grid System
@@ -17,10 +18,31 @@ export class FarmGrid {
     // Tile data map: "x,z" -> { state, crop, moisture, mesh, cropMesh }
     this.tiles = new Map();
 
-    // Realistic Wetland Soil Materials
-    this.matUntilled = new THREE.MeshStandardMaterial({ color: 0x3d4f3b, roughness: 0.8 }); // Wetland grass
-    this.matTilled = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 }); // Puddled dark soil (ചെളി)
-    this.matWatered = new THREE.MeshStandardMaterial({ color: 0x2b1d16, roughness: 0.2, metalness: 0.1 }); // Flooded wet mud
+    // High-Fidelity PBR Wetland Soil Materials
+    const grassTex = TextureGenerator.createTropicalGrassTexture();
+    grassTex.repeat.set(1, 1);
+    this.matUntilled = new THREE.MeshStandardMaterial({
+      map: grassTex,
+      roughness: 0.85,
+      metalness: 0.02
+    });
+
+    const mudTex = TextureGenerator.createWetSiltMudTexture();
+    mudTex.repeat.set(1, 1);
+    const mudNorm = TextureGenerator.createBumpNormalMap();
+    this.matTilled = new THREE.MeshStandardMaterial({
+      map: mudTex,
+      normalMap: mudNorm,
+      roughness: 0.7, // Prepared dark paddy soil
+      metalness: 0.05
+    });
+
+    this.matWatered = new THREE.MeshStandardMaterial({
+      map: mudTex,
+      normalMap: mudNorm,
+      roughness: 0.18, // Glistening waterlogged paddy mud (നനഞ്ഞ ചെളി)
+      metalness: 0.2
+    });
 
     // Tile outline cursor
     this.cursorMesh = null;

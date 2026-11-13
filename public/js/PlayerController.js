@@ -276,9 +276,9 @@ export class PlayerController {
     this.character.position.x += this.velocity.x * delta;
     this.character.position.z += this.velocity.z * delta;
 
-    // Boundary constraints
-    this.character.position.x = Math.max(-50, Math.min(50, this.character.position.x));
-    this.character.position.z = Math.max(-50, Math.min(50, this.character.position.z));
+    // Boundary constraints (Expanded for 360x360m Kerala Open World)
+    this.character.position.x = Math.max(-160, Math.min(160, this.character.position.x));
+    this.character.position.z = Math.max(-160, Math.min(160, this.character.position.z));
 
     // 4. Update Camera smooth third-person follow
     const targetOffset = new THREE.Vector3(

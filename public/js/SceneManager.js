@@ -8,10 +8,10 @@ export class SceneManager {
   constructor(container) {
     this.container = container;
 
-    // Scene with tropical atmosphere
+    // Scene with tropical Kerala atmosphere
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x87ceeb); // Tropical sky
-    this.scene.fog = new THREE.FogExp2(0x9fc2b2, 0.005); // Expanded open world fog
+    this.scene.background = new THREE.Color(0x82b1d0); // Vibrant tropical sky
+    this.scene.fog = new THREE.FogExp2(0xa1c4b7, 0.0038); // Soft humid atmospheric haze
 
     // Perspective Camera with expanded far plane
     this.camera = new THREE.PerspectiveCamera(
@@ -22,14 +22,14 @@ export class SceneManager {
     );
     this.camera.position.set(0, 14, 22);
 
-    // Renderer
+    // Renderer with ACES Filmic Tone Mapping
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.2;
     this.container.appendChild(this.renderer.domElement);
 
     // Dynamic Lighting & Night Lights
@@ -49,13 +49,13 @@ export class SceneManager {
   }
 
   setupLighting() {
-    // Ambient / Hemisphere light with lush green ground bounce
-    this.hemiLight = new THREE.HemisphereLight(0xfff5e6, 0x2e542e, 0.7);
+    // Ambient / Hemisphere light with lush green vegetation ground bounce
+    this.hemiLight = new THREE.HemisphereLight(0xfff6e6, 0x224922, 0.75);
     this.scene.add(this.hemiLight);
 
-    // Directional Tropical Sun
-    this.sunLight = new THREE.DirectionalLight(0xfff0b3, 1.4);
-    this.sunLight.position.set(50, 80, 40);
+    // Directional Tropical Sun with warm golden tone
+    this.sunLight = new THREE.DirectionalLight(0xfff4cc, 1.45);
+    this.sunLight.position.set(50, 85, 40);
     this.sunLight.castShadow = true;
     this.sunLight.shadow.mapSize.width = 2048;
     this.sunLight.shadow.mapSize.height = 2048;
@@ -63,12 +63,12 @@ export class SceneManager {
     this.sunLight.shadow.camera.far = 280;
 
     // Shadow coverage for Open World fields
-    const d = 85;
+    const d = 95;
     this.sunLight.shadow.camera.left = -d;
     this.sunLight.shadow.camera.right = d;
     this.sunLight.shadow.camera.top = d;
     this.sunLight.shadow.camera.bottom = -d;
-    this.sunLight.shadow.bias = -0.0002;
+    this.sunLight.shadow.bias = -0.00015;
     this.sunLight.shadow.normalBias = 0.02;
     this.scene.add(this.sunLight);
   }
