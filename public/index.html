@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🌴 കേരള 3D ഫാമിംഗ് സിമുലേറ്റർ (Kerala 3D Farm Simulator)</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Three.js and Loaders as standard ES modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./js/libs/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- 3D Canvas Container -->
+  <div id="game-container"></div>
+
+  <!-- HUD: Top Bar -->
+  <div id="top-bar">
+    <div class="hud-card logo-card">
+      <span class="icon">🌴</span>
+      <div>
+        <h1 class="game-title">കേരള ഫാം</h1>
+        <span class="sub-title">Kerala 3D Farm</span>
+      </div>
+    </div>
+
+    <div class="hud-card" id="time-card">
+      <span class="icon" id="sun-moon-icon">☀️</span>
+      <div>
+        <div id="clock-text">08:00 AM</div>
+        <div class="sub-title" id="day-text">ദിവസം 1 (Day 1)</div>
+      </div>
+    </div>
+
+    <div class="hud-card" id="coins-card">
+      <span class="icon">🪙</span>
+      <div>
+        <div id="coins-text">100</div>
+        <div class="sub-title">നാണയങ്ങൾ (Coins)</div>
+      </div>
+    </div>
+
+    <div class="hud-card" id="players-card">
+      <span class="icon">👥</span>
+      <div>
+        <div id="players-count">1 ഓൺലൈൻ</div>
+        <div class="sub-title" id="room-code">റൂം: പൊതുഫാം</div>
+      </div>
+    </div>
+
+    <div class="hud-card logo-card" id="save-card" style="cursor: pointer;" title="ഗെയിം സേവ് ചെയ്യുക">
+      <span class="icon">💾</span>
+      <div>
+        <div id="save-btn-text">സേവ് ചെയ്യുക</div>
+        <div class="sub-title">Save Game</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD: Target Tile Indicator Prompt -->
+  <div id="target-prompt" class="hidden">
+    <span id="prompt-action">മണ്ണ് ഒരുക്കുക (Till)</span>
+    <span class="key-hint">[Left Click / Space]</span>
+  </div>
+
+  <!-- HUD: Notification Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- HUD: Bottom Hotbar -->
+  <div id="bottom-hud">
+    <div id="hotbar-container">
+      <div class="hotbar-slot active" data-slot="1" data-tool="hoe">
+        <span class="slot-num">1</span>
+        <span class="slot-icon">⛏️</span>
+        <span class="slot-name">തൂമ്പ (Hoe)</span>
+      </div>
+      <div class="hotbar-slot" data-slot="2" data-tool="water">
+        <span class="slot-num">2</span>
+        <span class="slot-icon">💧</span>
+        <span class="slot-name">വെള്ളം (Water)</span>
+        <span class="slot-badge" id="water-badge">100%</span>
+      </div>
+      <div class="hotbar-slot" data-slot="3" data-tool="carrot">
+        <span class="slot-num">3</span>
+        <span class="slot-icon">🥕</span>
+        <span class="slot-name">കാരറ്റ് (Carrot)</span>
+        <span class="slot-badge" id="carrot-badge">5</span>
+      </div>
+      <div class="hotbar-slot" data-slot="4" data-tool="tomato">
+        <span class="slot-num">4</span>
+        <span class="slot-icon">🍅</span>
+        <span class="slot-name">തക്കാളി (Tomato)</span>
+        <span class="slot-badge" id="tomato-badge">5</span>
+      </div>
+      <div class="hotbar-slot" data-slot="5" data-tool="pumpkin">
+        <span class="slot-num">5</span>
+        <span class="slot-icon">🎃</span>
+        <span class="slot-name">മത്തങ്ങ (Pumpkin)</span>
+        <span class="slot-badge" id="pumpkin-badge">3</span>
+      </div>
+      <div class="hotbar-slot" data-slot="6" data-tool="wheat">
+        <span class="slot-num">6</span>
+        <span class="slot-icon">🌾</span>
+        <span class="slot-name">നെല്ല് (Paddy)</span>
+        <span class="slot-badge" id="wheat-badge">5</span>
+      </div>
+      <div class="hotbar-slot" data-slot="7" data-tool="scythe">
+        <span class="slot-num">7</span>
+        <span class="slot-icon">🌾</span>
+        <span class="slot-name">കൊയ്ത്തരിവാൾ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Market / Chanthu Modal -->
+  <div id="shop-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🏪 ഗ്രാമീണ ചന്ത (Village Market)</h2>
+        <button id="close-shop-btn" class="close-btn">✖</button>
+      </div>
+      <div class="modal-body">
+        <div class="shop-tabs">
+          <button class="tab-btn active" data-tab="buy">വിത്തുകൾ വാങ്ങുക (Buy Seeds)</button>
+          <button class="tab-btn" data-tab="sell">വിളവുകൾ വിൽക്കുക (Sell Crops)</button>
+        </div>
+
+        <div id="shop-buy-list" class="shop-grid">
+          <!-- Populated by UI.js -->
+        </div>
+
+        <div id="shop-sell-list" class="shop-grid hidden">
+          <!-- Populated by UI.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat & Multiplayer Panel (Bottom Left) -->
+  <div id="chat-container">
+    <div id="chat-messages"></div>
+    <div id="chat-input-row">
+      <input type="text" id="chat-input" placeholder="സന്ദേശം അയക്കൂ... (Enter to chat)" maxlength="80">
+      <button id="chat-send-btn">അയക്കുക</button>
+    </div>
+  </div>
+
+  <!-- Controls Help Overlay (Toggle with H) -->
+  <div id="help-card" class="hud-card help-panel">
+    <h4>🎮 കൺട്രോളുകൾ (Controls)</h4>
+    <p><b>W, A, S, D</b> : നടക്കുക (Move)</p>
+    <p><b>Shift</b> : ഓടുക (Sprint)</p>
+    <p><b>Space</b> : ചാടുക (Jump)</p>
+    <p><b>Mouse</b> : ക്യാമറ തിരിക്കുക (Orbit)</p>
+    <p><b>Left Click</b> : ഉപകരണം ഉപയോഗിക്കുക (Action)</p>
+    <p><b>1 - 7</b> : ടൂളുകൾ തിരഞ്ഞെടുക്കുക (Select Tool)</p>
+    <p><b>E</b> : കട തുറക്കുക / കിണറ്റിൽ നിന്ന് വെള്ളമെടുക്കുക</p>
+  </div>
+
+  <!-- Mobile Touch Controls -->
+  <div id="mobile-controls" class="mobile-only">
+    <div id="joystick-zone">
+      <div id="joystick-base">
+        <div id="joystick-stick"></div>
+      </div>
+    </div>
+    <div id="mobile-buttons">
+      <button id="btn-mobile-action" class="mob-btn action-btn">⛏️ ആക്ഷൻ</button>
+      <button id="btn-mobile-jump" class="mob-btn jump-btn">🦘 ചാടുക</button>
+      <button id="btn-mobile-shop" class="mob-btn shop-btn">🏪 കട</button>
+    </div>
+  </div>
+
+  <!-- Main JS entrypoint with cache-busting -->
+  <script type="module" src="js/main.js?v=3.2"></script>
+</body>
+</html>
