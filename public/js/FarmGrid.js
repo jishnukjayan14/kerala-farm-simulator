@@ -7,20 +7,20 @@ import { sounds } from './Audio.js';
  * Manages farm plots, tile states (untilled, tilled, watered), crop growth, and targeting cursor.
  */
 export class FarmGrid {
-  constructor(scene, gridSize = 8, tileSize = 2) {
+  constructor(scene, gridSize = 8, tileSize = 2.4, centerX = -36, centerZ = 12) {
     this.scene = scene;
     this.gridSize = gridSize; // 8x8 = 64 plots
     this.tileSize = tileSize;
-    this.originX = -((gridSize * tileSize) / 2) + 6; // Center-aligned slightly south
-    this.originZ = -((gridSize * tileSize) / 2) + 6;
+    this.originX = centerX - ((gridSize * tileSize) / 2);
+    this.originZ = centerZ - ((gridSize * tileSize) / 2);
 
     // Tile data map: "x,z" -> { state, crop, moisture, mesh, cropMesh }
     this.tiles = new Map();
 
-    // Materials
-    this.matUntilled = new THREE.MeshLambertMaterial({ color: 0x43a047 });
-    this.matTilled = new THREE.MeshLambertMaterial({ color: 0x8d4b32 }); // Kerala Red Earth
-    this.matWatered = new THREE.MeshLambertMaterial({ color: 0x3e2723 }); // Dark wet soil
+    // Realistic Wetland Soil Materials
+    this.matUntilled = new THREE.MeshStandardMaterial({ color: 0x3d4f3b, roughness: 0.8 }); // Wetland grass
+    this.matTilled = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.9 }); // Puddled dark soil (ചെളി)
+    this.matWatered = new THREE.MeshStandardMaterial({ color: 0x2b1d16, roughness: 0.2, metalness: 0.1 }); // Flooded wet mud
 
     // Tile outline cursor
     this.cursorMesh = null;

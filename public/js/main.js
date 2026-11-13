@@ -70,8 +70,8 @@ class Game {
     this.sceneMgr = new SceneManager(this.container);
     this.world = new KeralaWorld(this.sceneMgr.scene, this.sceneMgr.nightLights);
 
-    // 2. Farm Grid
-    this.farmGrid = new FarmGrid(this.sceneMgr.scene, 8, 2.2);
+    // 2. Farm Grid (Placed inside the Wetland Paddy Basin)
+    this.farmGrid = new FarmGrid(this.sceneMgr.scene, 8, 2.4, -36, 12);
     try {
       const savedPlots = localStorage.getItem('kerala_farm_plots');
       if (savedPlots) {
@@ -80,9 +80,9 @@ class Game {
       }
     } catch (e) {}
 
-    // 3. Local Player
+    // 3. Local Player (Spawns at the Farmhouse Courtyard)
     this.player = new KeralaFarmer(true, 'ഞാൻ');
-    this.player.group.position.set(0, 0, 8);
+    this.player.group.position.set(-6, 0, -36);
     this.sceneMgr.scene.add(this.player.group);
 
     // 4. Player Controller
@@ -269,19 +269,28 @@ class Game {
       this.player.group.rotation.y
     );
 
-    // Context prompts (Near well or shop)
+    // Update Player Zone HUD
+    const currentZone = this.world.getPlayerZone(this.player.group.position);
+    const zoneEl = document.getElementById('zone-text');
+    if (zoneEl && zoneEl.innerText !== currentZone) zoneEl.innerText = currentZone;
+
+    // Context prompts (Near well, shop, shed, or field)
     const distToWell = this.player.group.position.distanceTo(this.world.wellTrigger.position);
     const distToShop = this.player.group.position.distanceTo(this.world.shopTrigger.position);
+    const distToShed = this.world.shedTrigger ? this.player.group.position.distanceTo(this.world.shedTrigger.position) : 999;
 
     if (distToWell < this.world.wellTrigger.radius) {
       this.ui.setTargetPrompt(true, 'കിണറ്റിൽ നിന്ന് വെള്ളം കോരാൻ [E] അമർത്തുക');
     } else if (distToShop < this.world.shopTrigger.radius) {
       this.ui.setTargetPrompt(true, 'കടയിൽ കച്ചവടം ചെയ്യാൻ [E] അമർത്തുക');
+    } else if (distToShed < this.world.shedTrigger.radius) {
+      this.ui.setTargetPrompt(true, '🚜 ട്രാക്ടർ & മെഷിനറി വർക്ക്ഷോപ്പ്');
     } else if (targetTile) {
       let promptText = 'പ്രവർത്തിക്കാൻ ക്ലിക്ക് ചെയ്യുക';
-      if (this.ui.activeTool === 'hoe') promptText = 'മണ്ണ് കിളയ്ക്കുക (Till)';
-      else if (this.ui.activeTool === 'water') promptText = 'നനയ്ക്കുക (Water)';
+      if (this.ui.activeTool === 'hoe') promptText = 'കണ്ടം പൂട്ടി ഒരുക്കുക (Till/Puddle)';
+      else if (this.ui.activeTool === 'water') promptText = 'വെള്ളം കയറ്റുക (Irrigate)';
       else if (this.ui.activeTool === 'scythe') promptText = 'വിളവെടുക്കുക (Harvest)';
+      else if (this.ui.activeTool === 'wheat') promptText = 'ഞാറു നടുക (Transplant Paddy)';
       else promptText = `${this.ui.activeTool} വിത്ത് നടുക (Plant)`;
       this.ui.setTargetPrompt(true, promptText);
     } else {
@@ -291,13 +300,13 @@ class Game {
     // 3. Update Crops & Growth
     this.farmGrid.updateCrops(delta);
 
-    // 4. Update Day/Night Cycle & Clock
-    this.sceneMgr.updateDayNightCycle(delta);
+    // 4. Update Day/Night Cycle, Rain, & Clock
+    this.sceneMgr.updateDayNightCycle(delta, this.player.group.position);
     const clockText = document.getElementById('clock-text');
     if (clockText) clockText.innerText = this.sceneMgr.getFormattedTime();
 
-    // 5. Animate Palm Trees Fronds swaying in wind
-    this.world.animate(elapsedTime);
+    // 5. Animate Water Flow & Palm Trees in Wind
+    this.world.animate(delta, elapsedTime);
 
     // 6. Network update (send position & interpolate remote friends)
     this.network.sendMovement(
