@@ -24,11 +24,11 @@ export class PlayerController {
     this.verticalVelocity = 0;
 
     // Camera Orbit angles
-    this.cameraPitch = 0.35; // Vertical angle
+    this.cameraPitch = 0.4;  // Comfortable over-the-shoulder angle
     this.cameraYaw = 0.0;    // Horizontal angle
-    this.cameraDistance = 8.5;
-    this.minPitch = 0.05;
-    this.maxPitch = 1.35;
+    this.cameraDistance = 6.0; // Optimized distance to prevent wall clipping
+    this.minPitch = 0.18;    // Prevents camera from dipping into the ground
+    this.maxPitch = 1.25;
 
     // Key states
     this.keys = {
@@ -280,15 +280,18 @@ export class PlayerController {
     this.character.position.x = Math.max(-160, Math.min(160, this.character.position.x));
     this.character.position.z = Math.max(-160, Math.min(160, this.character.position.z));
 
-    // 4. Update Camera smooth third-person follow
+    // 4. Update Camera smooth third-person follow (with ground clearance clamp)
     const targetOffset = new THREE.Vector3(
       Math.sin(this.cameraYaw) * Math.cos(this.cameraPitch) * this.cameraDistance,
-      Math.sin(this.cameraPitch) * this.cameraDistance + 1.6,
+      Math.sin(this.cameraPitch) * this.cameraDistance + 1.8,
       Math.cos(this.cameraYaw) * Math.cos(this.cameraPitch) * this.cameraDistance
     );
 
     const cameraTarget = this.character.position.clone().add(targetOffset);
-    this.camera.position.lerp(cameraTarget, delta * 10);
+    cameraTarget.y = Math.max(1.5, cameraTarget.y); // Ground clearance clamp
+
+    this.camera.position.lerp(cameraTarget, delta * 12);
+    this.camera.position.y = Math.max(1.5, this.camera.position.y); // Never go below 1.5m
     this.camera.lookAt(this.character.position.x, this.character.position.y + 1.4, this.character.position.z);
 
     return isMoving;

@@ -80,9 +80,9 @@ class Game {
       }
     } catch (e) {}
 
-    // 3. Local Player (Spawns at the Farmhouse Courtyard)
+    // 3. Local Player (Spawns at the Open Village Road & Courtyard)
     this.player = new KeralaFarmer(true, 'ഞാൻ');
-    this.player.group.position.set(-6, 0, -36);
+    this.player.group.position.set(0, 0, -20);
     this.sceneMgr.scene.add(this.player.group);
 
     // 4. Player Controller
