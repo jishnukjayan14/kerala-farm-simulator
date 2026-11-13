@@ -16,7 +16,7 @@ import * as THREE from 'three';
 export class TextureGenerator {
   // 1. Asphalt Road Texture (അഗ്രിഗേറ്റുകൾ ഉള്ള ടാർ റോഡ്)
   static createAsphaltTexture() {
-    const size = 1024;
+    const size = 512;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -51,7 +51,7 @@ export class TextureGenerator {
 
   // 2. Kerala Red Laterite Soil (ചെങ്കല്ല് / ചെമ്മണ്ണ്)
   static createRedLateriteTexture() {
-    const size = 1024;
+    const size = 512;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -84,7 +84,7 @@ export class TextureGenerator {
 
   // 3. Flooded Wetland Silt Mud (വയലിലെ കറുത്ത നനഞ്ഞ ചെളി)
   static createWetSiltMudTexture() {
-    const size = 1024;
+    const size = 512;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -114,7 +114,7 @@ export class TextureGenerator {
 
   // 4. Tropical Blade Grass Texture (പച്ചപ്പുല്ല്)
   static createTropicalGrassTexture() {
-    const size = 1024;
+    const size = 512;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -157,7 +157,7 @@ export class TextureGenerator {
 
   // 5. Traditional Terracotta Roof Tiles (മംഗലാപുരം ഓട്)
   static createRoofTileTexture() {
-    const size = 1024;
+    const size = 512;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;

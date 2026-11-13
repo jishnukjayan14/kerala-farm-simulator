@@ -22,12 +22,12 @@ export class SceneManager {
     );
     this.camera.position.set(0, 14, 22);
 
-    // Renderer with ACES Filmic Tone Mapping
+    // Renderer with ACES Filmic Tone Mapping & High FPS performance tuning
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25)); // Optimal DPI without GPU bottleneck
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap; // Fast hardware-accelerated anti-aliased shadows
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
     this.container.appendChild(this.renderer.domElement);
@@ -57,8 +57,8 @@ export class SceneManager {
     this.sunLight = new THREE.DirectionalLight(0xfff4cc, 1.45);
     this.sunLight.position.set(50, 85, 40);
     this.sunLight.castShadow = true;
-    this.sunLight.shadow.mapSize.width = 2048;
-    this.sunLight.shadow.mapSize.height = 2048;
+    this.sunLight.shadow.mapSize.width = 1024; // 1024 provides crisp shadows at high frame rate
+    this.sunLight.shadow.mapSize.height = 1024;
     this.sunLight.shadow.camera.near = 0.5;
     this.sunLight.shadow.camera.far = 280;
 

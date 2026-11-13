@@ -449,16 +449,16 @@ export class KeralaWorld {
     plantGroup.add(stalk);
 
     // Signature 5-7 finger palmate leaves
-    for (let h of [0.9, 1.45, 1.9]) {
-      for (let i = 0; i < 4; i++) {
-        const ang = (i / 4) * Math.PI * 2;
-        const petiole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.45), stemMat);
+    for (let h of [1.1, 1.7]) {
+      for (let i = 0; i < 3; i++) {
+        const ang = (i / 3) * Math.PI * 2 + (h === 1.7 ? 0.5 : 0);
+        const petiole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.45, 4), stemMat);
         petiole.position.set(0, h, 0);
         petiole.rotation.z = Math.PI / 3;
         petiole.rotation.y = ang;
 
         // Leaf fan
-        const fan = new THREE.Mesh(new THREE.CircleGeometry(0.32, 6), leafMat);
+        const fan = new THREE.Mesh(new THREE.CircleGeometry(0.32, 5), leafMat);
         fan.position.set(0.38, h + 0.18, 0);
         fan.rotation.x = Math.PI / 4;
         plantGroup.add(fan);
@@ -814,32 +814,31 @@ export class KeralaWorld {
       side: THREE.DoubleSide
     });
 
-    // 14 Realistic Arched Pinnate Fronds
-    const frondCount = 14;
+    // 12 Realistic Arched Pinnate Fronds
+    const frondCount = 12;
     for (let i = 0; i < frondCount; i++) {
       const angle = (i / frondCount) * Math.PI * 2;
       const frond = new THREE.Group();
       frond.rotation.y = angle;
 
       // Parabolic drooping leaf blade
-      const leafGeo = new THREE.PlaneGeometry(1.4, 6.2, 3, 5);
+      const leafGeo = new THREE.PlaneGeometry(1.4, 5.8, 2, 4);
       const leaf = new THREE.Mesh(leafGeo, frondLeafMat);
-      leaf.position.set(0, -0.6, 3.0);
+      leaf.position.set(0, -0.5, 2.8);
       leaf.rotation.x = Math.PI / 2 - 0.45;
-      leaf.castShadow = true;
       frond.add(leaf);
 
       crown.add(frond);
       this.palmFronds.push(leaf);
     }
 
-    // Cluster of 10-12 Coconuts (ഇളനീർ & പച്ചത്തേങ്ങ)
+    // Cluster of 6 Coconuts (ഇളനീർ & പച്ചത്തേങ്ങ)
     const nutMat = new THREE.MeshStandardMaterial({ color: 0x689f38, roughness: 0.5 });
-    for (let c = 0; c < 10; c++) {
-      const nutAng = (c / 10) * Math.PI * 2;
-      const nut = new THREE.Mesh(new THREE.SphereGeometry(0.3, 7, 7), nutMat);
-      nut.scale.set(1, 1.25, 1);
-      nut.position.set(Math.cos(nutAng) * 0.55, -0.4, Math.sin(nutAng) * 0.55);
+    for (let c = 0; c < 6; c++) {
+      const nutAng = (c / 6) * Math.PI * 2;
+      const nut = new THREE.Mesh(new THREE.SphereGeometry(0.28, 5, 5), nutMat);
+      nut.scale.set(1, 1.2, 1);
+      nut.position.set(Math.cos(nutAng) * 0.45, -0.35, Math.sin(nutAng) * 0.45);
       crown.add(nut);
     }
 
@@ -859,8 +858,8 @@ export class KeralaWorld {
     stem.castShadow = true;
     bananaGroup.add(stem);
 
-    // 8 Grand Arching Broad Leaves with midribs (പച്ച വാഴയിലകൾ)
-    const leafCount = 8;
+    // 6 Grand Arching Broad Leaves with midribs (പച്ച വാഴയിലകൾ)
+    const leafCount = 6;
     for (let i = 0; i < leafCount; i++) {
       const angle = (i / leafCount) * Math.PI * 2;
       const leafGroup = new THREE.Group();
@@ -868,44 +867,37 @@ export class KeralaWorld {
       leafGroup.rotation.y = angle;
 
       // Curved wide paddle leaf
-      const leafGeo = new THREE.PlaneGeometry(1.4, 3.8, 4, 4);
+      const leafGeo = new THREE.PlaneGeometry(1.4, 3.6, 2, 2);
       const leaf = new THREE.Mesh(leafGeo, this.matBananaLeaf);
       leaf.position.set(0, -0.4, 1.8);
       leaf.rotation.x = 0.55;
-      leaf.castShadow = true;
       leafGroup.add(leaf);
 
       bananaGroup.add(leafGroup);
       this.bananaLeaves.push(leaf);
     }
 
-    // Heavy Golden-Green Banana Fruit Bunch (ഏത്തക്കുല & വാഴക്കൂമ്പ്)
+    // Golden-Green Banana Fruit Bunch (ഏത്തക്കുല & വാഴക്കൂമ്പ്)
     if (hasBunch) {
       const bunchGroup = new THREE.Group();
       bunchGroup.position.set(0, 2.4, 0.65);
 
       // Curved stalk
-      const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 1.1), stemMat);
+      const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 1.0, 5), stemMat);
       stalk.rotation.x = 0.4;
       bunchGroup.add(stalk);
 
-      // Tiered banana fingers (കൈകൾ)
+      // Clustered Banana Bunch Body (ഏത്തക്കുല)
       const bananaMat = new THREE.MeshStandardMaterial({ color: 0xd4e157, roughness: 0.5 });
-      for (let tier = 0; tier < 4; tier++) {
-        for (let b = 0; b < 6; b++) {
-          const bAng = (b / 6) * Math.PI * 2;
-          const finger = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 5), bananaMat);
-          finger.position.set(Math.cos(bAng) * 0.28, -tier * 0.22, Math.sin(bAng) * 0.28);
-          finger.rotation.z = Math.cos(bAng) * 0.4;
-          bunchGroup.add(finger);
-        }
-      }
+      const bunchBody = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.38, 0.75, 7), bananaMat);
+      bunchBody.position.set(0, -0.3, 0);
+      bunchGroup.add(bunchBody);
 
       // Purple/Maroon Terminal Inflorescence Bell (വാഴക്കൂമ്പ്)
       const budMat = new THREE.MeshStandardMaterial({ color: 0x4a148c, roughness: 0.4 });
-      const bud = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.5, 7), budMat);
+      const bud = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.45, 6), budMat);
       bud.rotation.x = Math.PI;
-      bud.position.set(0, -1.1, 0);
+      bud.position.set(0, -0.85, 0);
       bunchGroup.add(bud);
 
       bananaGroup.add(bunchGroup);
