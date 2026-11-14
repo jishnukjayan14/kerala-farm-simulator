@@ -18,3 +18,4 @@ ENV/
 
 # Game runtime logs & temp data
 *.log
+*.zip

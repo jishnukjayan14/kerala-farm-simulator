@@ -361,4 +361,77 @@ export class TextureGenerator {
     texture.wrapT = THREE.RepeatWrapping;
     return texture;
   }
+
+  // 11. Rocky River Bank & Cliff Texture (പാറക്കൂട്ടങ്ങൾ)
+  static createRiverRockTexture() {
+    const size = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#4a4e51'; // Slate granite
+    ctx.fillRect(0, 0, size, size);
+
+    const imgData = ctx.getImageData(0, 0, size, size);
+    const data = imgData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const noise = (Math.random() - 0.5) * 50;
+      const rockTone = Math.random() > 0.8 ? 20 : 0;
+      data[i] = Math.min(255, Math.max(30, 80 + noise + rockTone));
+      data[i + 1] = Math.min(255, Math.max(30, 82 + noise + rockTone));
+      data[i + 2] = Math.min(255, Math.max(30, 85 + noise + rockTone * 1.2));
+      data[i + 3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    // Weathered fissures and cracks
+    ctx.strokeStyle = 'rgba(25, 25, 28, 0.4)';
+    ctx.lineWidth = 2;
+    for (let c = 0; c < 25; c++) {
+      ctx.beginPath();
+      let cx = Math.random() * size;
+      let cy = Math.random() * size;
+      ctx.moveTo(cx, cy);
+      for (let s = 0; s < 4; s++) {
+        cx += (Math.random() - 0.5) * 40;
+        cy += (Math.random() - 0.5) * 40;
+        ctx.lineTo(cx, cy);
+      }
+      ctx.stroke();
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    return texture;
+  }
+
+  // 12. Cascading Waterfall Foam Texture (വെള്ളച്ചാട്ടത്തിന്റെ പത)
+  static createWaterfallTexture() {
+    const size = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = 'rgba(215, 245, 255, 0.75)';
+    ctx.fillRect(0, 0, size, size);
+
+    // Longitudinal foaming white water torrent streaks
+    for (let i = 0; i < 400; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const h = 20 + Math.random() * 60;
+      const w = 1.5 + Math.random() * 3;
+      ctx.fillStyle = Math.random() > 0.4 ? 'rgba(255, 255, 255, 0.95)' : 'rgba(180, 230, 245, 0.6)';
+      ctx.fillRect(x, y, w, h);
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    return texture;
+  }
 }

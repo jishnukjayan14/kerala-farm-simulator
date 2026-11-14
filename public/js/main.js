@@ -70,8 +70,8 @@ class Game {
     this.sceneMgr = new SceneManager(this.container);
     this.world = new KeralaWorld(this.sceneMgr.scene, this.sceneMgr.nightLights);
 
-    // 2. Farm Grid (Placed inside the Wetland Paddy Basin)
-    this.farmGrid = new FarmGrid(this.sceneMgr.scene, 8, 2.4, -36, 12);
+    // 2. Farm Grid (Placed inside the West Wetland Paddy Basin per Blueprint)
+    this.farmGrid = new FarmGrid(this.sceneMgr.scene, 8, 2.4, -55, 0);
     try {
       const savedPlots = localStorage.getItem('kerala_farm_plots');
       if (savedPlots) {
@@ -80,9 +80,9 @@ class Game {
       }
     } catch (e) {}
 
-    // 3. Local Player (Spawns at the Open Village Road & Courtyard)
+    // 3. Local Player (Spawns on the Main Road approaching the Central Roundabout)
     this.player = new KeralaFarmer(true, 'ഞാൻ');
-    this.player.group.position.set(0, 0, -20);
+    this.player.group.position.set(0, 0, 5);
     this.sceneMgr.scene.add(this.player.group);
 
     // 4. Player Controller
