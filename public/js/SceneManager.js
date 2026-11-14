@@ -8,17 +8,17 @@ export class SceneManager {
   constructor(container) {
     this.container = container;
 
-    // Scene with tropical Kerala atmosphere
+    // Scene with tropical Kerala atmosphere (Vast 800m viewing distance)
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x82b1d0); // Vibrant tropical sky
-    this.scene.fog = new THREE.FogExp2(0xa1c4b7, 0.0038); // Soft humid atmospheric haze
+    this.scene.background = new THREE.Color(0x78afcf); // Deep Kerala tropical blue sky
+    this.scene.fog = new THREE.FogExp2(0x9cbdb2, 0.0016); // Gentle distant atmospheric haze
 
     // Perspective Camera with expanded far plane
     this.camera = new THREE.PerspectiveCamera(
       52,
       window.innerWidth / window.innerHeight,
       0.1,
-      1800
+      2200
     );
     this.camera.position.set(0, 14, 22);
 
@@ -29,7 +29,7 @@ export class SceneManager {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap; // Fast hardware-accelerated anti-aliased shadows
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.2;
+    this.renderer.toneMappingExposure = 1.28;
     this.container.appendChild(this.renderer.domElement);
 
     // Dynamic Lighting & Night Lights
@@ -49,21 +49,21 @@ export class SceneManager {
   }
 
   setupLighting() {
-    // Ambient / Hemisphere light with lush green vegetation ground bounce
-    this.hemiLight = new THREE.HemisphereLight(0xfff6e6, 0x224922, 0.75);
+    // Ambient / Hemisphere light with rich contrasting ground bounce
+    this.hemiLight = new THREE.HemisphereLight(0xfff6e6, 0x1e3f1e, 0.62);
     this.scene.add(this.hemiLight);
 
-    // Directional Tropical Sun with warm golden tone
-    this.sunLight = new THREE.DirectionalLight(0xfff4cc, 1.45);
-    this.sunLight.position.set(50, 85, 40);
+    // Directional Tropical Sun with warm golden tone (Crisp FS22 lighting)
+    this.sunLight = new THREE.DirectionalLight(0xfff4cc, 1.65);
+    this.sunLight.position.set(65, 110, 50);
     this.sunLight.castShadow = true;
-    this.sunLight.shadow.mapSize.width = 1024; // 1024 provides crisp shadows at high frame rate
+    this.sunLight.shadow.mapSize.width = 1024;
     this.sunLight.shadow.mapSize.height = 1024;
     this.sunLight.shadow.camera.near = 0.5;
-    this.sunLight.shadow.camera.far = 280;
+    this.sunLight.shadow.camera.far = 350;
 
-    // Shadow coverage for Open World fields
-    const d = 95;
+    // Shadow coverage for Town & Fields
+    const d = 110;
     this.sunLight.shadow.camera.left = -d;
     this.sunLight.shadow.camera.right = d;
     this.sunLight.shadow.camera.top = d;
