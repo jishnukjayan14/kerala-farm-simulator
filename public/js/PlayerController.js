@@ -276,9 +276,9 @@ export class PlayerController {
     this.character.position.x += this.velocity.x * delta;
     this.character.position.z += this.velocity.z * delta;
 
-    // Boundary constraints (Expanded for 360x360m Kerala Open World)
-    this.character.position.x = Math.max(-160, Math.min(160, this.character.position.x));
-    this.character.position.z = Math.max(-160, Math.min(160, this.character.position.z));
+    // Boundary constraints (Expanded for 800x800m Master Blueprint World)
+    this.character.position.x = Math.max(-280, Math.min(280, this.character.position.x));
+    this.character.position.z = Math.max(-280, Math.min(280, this.character.position.z));
 
     // 4. Update Camera smooth third-person follow (with ground clearance clamp)
     const targetOffset = new THREE.Vector3(

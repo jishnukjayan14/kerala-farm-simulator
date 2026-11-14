@@ -275,16 +275,16 @@ class Game {
     if (zoneEl && zoneEl.innerText !== currentZone) zoneEl.innerText = currentZone;
 
     // Context prompts (Near well, shop, shed, or field)
-    const distToWell = this.player.group.position.distanceTo(this.world.wellTrigger.position);
-    const distToShop = this.player.group.position.distanceTo(this.world.shopTrigger.position);
+    const distToWell = this.world.wellTrigger ? this.player.group.position.distanceTo(this.world.wellTrigger.position) : 999;
+    const distToShop = this.world.shopTrigger ? this.player.group.position.distanceTo(this.world.shopTrigger.position) : 999;
     const distToShed = this.world.shedTrigger ? this.player.group.position.distanceTo(this.world.shedTrigger.position) : 999;
 
-    if (distToWell < this.world.wellTrigger.radius) {
+    if (this.world.wellTrigger && distToWell < this.world.wellTrigger.radius) {
       this.ui.setTargetPrompt(true, 'കിണറ്റിൽ നിന്ന് വെള്ളം കോരാൻ [E] അമർത്തുക');
-    } else if (distToShop < this.world.shopTrigger.radius) {
+    } else if (this.world.shopTrigger && distToShop < this.world.shopTrigger.radius) {
       this.ui.setTargetPrompt(true, 'കടയിൽ കച്ചവടം ചെയ്യാൻ [E] അമർത്തുക');
-    } else if (distToShed < this.world.shedTrigger.radius) {
-      this.ui.setTargetPrompt(true, '🚜 ട്രാക്ടർ & മെഷിനറി വർക്ക്ഷോപ്പ്');
+    } else if (this.world.shedTrigger && distToShed < this.world.shedTrigger.radius) {
+      this.ui.setTargetPrompt(true, '🚜 ട്രാക്ടർ & ഫാം വർക്ക്‌ഷോപ്പ്');
     } else if (targetTile) {
       let promptText = 'പ്രവർത്തിക്കാൻ ക്ലിക്ക് ചെയ്യുക';
       if (this.ui.activeTool === 'hoe') promptText = 'കണ്ടം പൂട്ടി ഒരുക്കുക (Till/Puddle)';
